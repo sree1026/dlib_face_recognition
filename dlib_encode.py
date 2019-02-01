@@ -5,18 +5,13 @@ import glob
 import cv2
 import numpy as np
 import pickle
-# if len(sys.argv) != 4:
-#     print(
-#         "Call this program like this:\n"
-#         "   ./face_recognition.py shape_predictor_5_face_landmarks.dat dlib_face_recognition_resnet_model_v1.dat ../examples/faces\n"
-#         "You can download a trained facial shape predictor and recognition model from:\n"
-#         "    http://dlib.net/files/shape_predictor_5_face_landmarks.dat.bz2\n"
-#         "    http://dlib.net/files/dlib_face_recognition_resnet_model_v1.dat.bz2")
-#     exit()
+if len(sys.argv) == 0:
+    print("Enter folder of training dataset: ")
+    exit()
 
-predictor_path = sys.argv[1]
-face_rec_model_path = sys.argv[2]
-faces_folder_path = sys.argv[3]
+predictor_path = 'shape_predictor_5_face_landmarks.dat'
+face_rec_model_path = 'dlib_face_recognition_resnet_model_v1.dat'
+faces_folder_path = sys.argv[1]
 data = []
 
 # Load all the models we need: a detector to find the faces, a shape predictor
@@ -47,7 +42,7 @@ def calculate_encodings():
         # will make everything bigger and allow us to detect more faces.
         dets = detector(img, 1)
         print("Number of faces detected: {}".format(len(dets)))
-        if (len(dets) != 0):
+        if len(dets != 0):
             # Now process each face we found.
             for k, d in enumerate(dets):
                 print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(k, d.left(), d.top(), d.right(),
@@ -60,32 +55,15 @@ def calculate_encodings():
                 win.add_overlay(shape)
 
                 # Compute the 128D vector that describes the face in img identified by
-                # shape.  In general, if two face descriptor vectors have a Euclidean
-                # distance between them less than 0.6 then they are from the same
-                # person, otherwise they are from different people. Here we just print
-                # the vector to the screen.
                 face_descriptor = list(facerec.compute_face_descriptor(img, shape))
                 # print(face_descriptor)
                 data.append([img_name, np.array(face_descriptor)])
-                # It should also be noted that you can also call this function like this:
-                #  face_descriptor = facerec.compute_face_descriptor(img, shape, 100)
-                # The version of the call without the 100 gets 99.13% accuracy on LFW
-                # while the version with 100 gets 99.38%.  However, the 100 makes the
-                # call 100x slower to execute, so choose whatever version you like.  To
-                # explain a little, the 3rd argument tells the code how many times to
-                # jitter/resample the image.  When you set it to 100 it executes the
-                # face descriptor extraction 100 times on slightly modified versions of
-                # the face and returns the average result.  You could also pick a more
-                # middle value, such as 10, which is only 10x slower but still gets an
-                # LFW accuracy of 99.3%.
             # dlib.hit_enter_to_continue()
-        # else:
-        #     cv2.imshow('img', img)
-        #     cv2.waitKey(0)
-        #     cv2.destroyWindow('img')
 
     print("Database finished.....")
-    with open('encodings', 'wb') as fp:
+    with open('encodings_dlib', 'wb') as fp:
         fp.write(pickle.dumps(data))
+
+
 if __name__ == '__main__':
     calculate_encodings()
