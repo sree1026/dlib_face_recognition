@@ -38,7 +38,7 @@ def L2_distance(face_encoding):
     :param face_encoding: It is list containing facial encoding of the face detected in the frame of camera feed
     :return: It returns a list of tuple containing name of the person and his L2 distance with the detected face encoding
     """
-    min_distance = 0.48
+    min_distance = 0.45
     name = 'unknown'
     database_list = []
     print("Calculating Matches.........")
@@ -60,7 +60,7 @@ def video_write(frame_array):
     :return: It returns none
     """
     fourcc = cv2.VideoWriter_fourcc(*"DIVX")
-    writer = cv2.VideoWriter('Demo_video4.avi', fourcc, 25, (frame_array[0].shape[1], frame_array[0].shape[0]), True)
+    writer = cv2.VideoWriter('Demo_video3.avi', fourcc, 25, (frame_array[0].shape[1], frame_array[0].shape[0]), True)
     for frame in frame_array:
         writer.write(frame)
     print(len(frame_array))
@@ -167,15 +167,15 @@ def face_recogniser():
                             x = display_width
                             cv2.putText(display, value, (x-(10*len(value)), y + 15), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255, 255, 255), 1)
 
-            # result = np.concatenate((frame, display), axis=1)
+            result = np.concatenate((frame, display), axis=1)
             window_name = 'Find your face :p '
-            frame_array.append(frame)
+            frame_array.append(result)
 
             # To display in full screen mode
             # cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
             # cv2.moveWindow(window_name, screen_detail.x - 1, screen_detail.y - 1)
             # cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            cv2.imshow(window_name, frame)
+            cv2.imshow(window_name, result)
             # cv2.imshow(window_name, frame)
             # cv2.imshow('display', display)
         if cv2.waitKey(1) == ord('q'):
